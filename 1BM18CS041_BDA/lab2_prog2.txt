@@ -1,0 +1,39 @@
+cqlsh> CREATE KEYSPACE Library with replication = {'class': 'SimpleStrategy', 'replication_factor':1};
+cqlsh> USE library ;
+cqlsh:library> CREATE TABLE library_info(stud_id int, counter_value counter, stud_name text, book_name text, book_id int, date_of_issue date, primary key(stud_id, stud_name, book_name, book_id, date_of_issue));
+cqlsh:library> update library_info set counter_value = counter_value + 1 where stud_id = 112 and stud_name = 'Dann' and book_name = 'Hell and Heaven' and book_id = 1 and date_of_issue = '2021-03-16';
+cqlsh:library> update library_info set counter_value = counter_value + 1 where stud_id = 113 and stud_name = 'Ali' and book_name = 'Demon King' and book_id = 2 and date_of_issue = '2021-03-20';
+cqlsh:library> select * from library_info;
+
+ stud_id | stud_name | book_name       | book_id | date_of_issue | counter_value
+---------+-----------+-----------------+---------+---------------+---------------
+     113 |       Ali |      Demon King |       2 |    2021-03-20 |             1
+     112 |      Dann | Hell and Heaven |       1 |    2021-03-16 |             1
+
+(2 rows)
+cqlsh:library> update library_info set counter_value = counter_value + 2 where stud_id = 113 and stud_name = 'Ali' and book_name = 'Demon King' and book_id = 2 and date_of_issue = '2021-03-20';
+cqlsh:library> select * from library_info;
+
+ stud_id | stud_name | book_name       | book_id | date_of_issue | counter_value
+---------+-----------+-----------------+---------+---------------+---------------
+     113 |       Ali |      Demon King |       2 |    2021-03-20 |             3
+     112 |      Dann | Hell and Heaven |       1 |    2021-03-16 |             1
+
+(2 rows)
+cqlsh:library> update library_info set counter_value = counter_value - 1 where stud_id = 113 and stud_name = 'Ali' and book_name = 'Demon King' and book_id = 2 and date_of_issue = '2021-03-20';
+cqlsh:library> select * from library_info  where stud_id = 113;
+
+ stud_id | stud_name | book_name  | book_id | date_of_issue | counter_value
+---------+-----------+------------+---------+---------------+---------------
+     113 |       Ali | Demon King |       2 |    2021-03-20 |             2
+
+(1 rows)
+cqlsh:library> copy library_info (stud_id, stud_name, book_name, book_id, date_of_issue , counter_value) to 'G:\libraryinfo.csv';
+Using 1 child processes
+
+Starting copy of library.library_info with columns [stud_id, stud_name, book_name, book_id, date_of_issue, counter_value].
+cqlshlib.copyutil.ExportProcess.write_rows_to_csv(): writing row
+cqlshlib.copyutil.ExportProcess.write_rows_to_csv(): writing row
+Processed: 2 rows; Rate:       3 rows/s; Avg. rate:       4 rows/s
+2 rows exported to 1 files in 0.548 seconds.
+cqlsh:library> 
